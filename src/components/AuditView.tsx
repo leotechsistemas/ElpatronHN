@@ -7,10 +7,10 @@ interface AuditEntry {
   usuario: string;
   accion: string;
   entidad: string;
-  entidadId: string;
+  entidad_id: string;
   detalle: string;
   ip: string;
-  creadoEn: string;
+  creado_en: string;
 }
 
 export default function AuditView() {
@@ -37,7 +37,7 @@ export default function AuditView() {
         (l.usuario || '').toLowerCase().includes(search.toLowerCase()) ||
         (l.entidad || '').toLowerCase().includes(search.toLowerCase()) ||
         (l.accion || '').toLowerCase().includes(search.toLowerCase()) ||
-        (l.entidadId || '').toLowerCase().includes(search.toLowerCase()))
+        (l.entidad_id || '').toLowerCase().includes(search.toLowerCase()))
     : logs;
 
   const badgeColor = (a: string) => {
@@ -88,7 +88,7 @@ export default function AuditView() {
                 <tr><td colSpan={7} className="text-center py-8 text-textD">Sin registros de auditoría</td></tr>
               ) : filtered.map(l => (
                 <tr key={l.id} className="border-b border-cyber-purple/10 hover:bg-cyber-purple/5 transition-colors">
-                  <td className="px-4 py-2.5 text-textD whitespace-nowrap">{l.creadoEn?.replace('T', ' ').slice(0, 19)}</td>
+                  <td className="px-4 py-2.5 text-textD whitespace-nowrap">{l.creado_en?.replace('T', ' ').slice(0, 19)}</td>
                   <td className="px-4 py-2.5 text-cyber-cyan">{l.usuario}</td>
                   <td className="px-4 py-2.5">
                     <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border ${badgeColor(l.accion)}`}>
@@ -96,7 +96,7 @@ export default function AuditView() {
                     </span>
                   </td>
                   <td className="px-4 py-2.5 text-text">{l.entidad}</td>
-                  <td className="px-4 py-2.5 text-textD">{l.entidadId}</td>
+                  <td className="px-4 py-2.5 text-textD">{l.entidad_id}</td>
                   <td className="px-4 py-2.5 text-textD max-w-[200px] truncate">{l.detalle}</td>
                   <td className="px-4 py-2.5 text-textD">{l.ip}</td>
                 </tr>
