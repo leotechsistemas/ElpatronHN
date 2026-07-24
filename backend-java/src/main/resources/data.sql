@@ -14,6 +14,7 @@ INSERT INTO account_catalog (id, codigo, nombre, tipo, nivel, acepta_asientos, p
 ('2.1.1', '2.1.1', 'Impuestos por Pagar', 'Pasivo', 3, true, '2.1', true),
 ('3', '3', 'Patrimonio', 'Patrimonio', 1, false, null, true),
 ('3.1.1', '3.1.1', 'Capital', 'Patrimonio', 3, true, '3', true),
+('3.1.2', '3.1.2', 'Utilidades Retenidas', 'Patrimonio', 3, true, '3', true),
 ('4', '4', 'Ingresos', 'Ingreso', 1, false, null, true),
 ('4.1.1', '4.1.1', 'Ventas', 'Ingreso', 3, true, '4', true),
 ('5', '5', 'Gastos', 'Gasto', 1, false, null, true),

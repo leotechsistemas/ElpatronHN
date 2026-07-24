@@ -365,7 +365,7 @@ public class AccountingService {
         items.add(entryItem(cuentaCaja, capital, 0L, "Aporte de capital"));
         items.add(entryItem(cuentaCapital, 0L, capital, "Capital inicial"));
 
-        createAutoEntry(LocalDate.of(2023, 1, 1), concepto, "Diario", "APERTURA", "SISTEMA", creadoPor, items);
+        createAutoEntry(LocalDate.now().withMonth(1).withDayOfMonth(1), concepto, "Diario", "APERTURA", "SISTEMA", creadoPor, items);
     }
 
     @Transactional
@@ -381,12 +381,7 @@ public class AccountingService {
 
         String cuentaIngresos = findCuentaByCodigo("4");
         String cuentaGastos = findCuentaByCodigo("5");
-        String cuentaUtilidad;
-        if (utilidad >= 0L) {
-            cuentaUtilidad = findCuentaByCodigo("3.1.1");
-        } else {
-            cuentaUtilidad = findCuentaByCodigo("5.1.2");
-        }
+        String cuentaUtilidad = findCuentaByCodigo("3.1.2");
 
         List<AccountingEntryRequest.EntryItem> items = new ArrayList<>();
 
@@ -498,12 +493,22 @@ public class AccountingService {
         List<AccountingEntryItem> items = itemRepository.findByCuentaId(cuentaId);
         List<LedgerResponse.LedgerItem> movimientos = new ArrayList<>();
 
+        long saldoInicial = 0L;
         long saldo = 0L;
         for (AccountingEntryItem item : items) {
             AccountingEntry entry = entryRepository.findById(item.getAsientoId()).orElse(null);
-            if (entry == null || entry.getFecha().isBefore(fechaDesde) || entry.getFecha().isAfter(fechaHasta))
-                continue;
+            if (entry == null) continue;
+            if (entry.getReversado()) continue;
+            if ("REVERSIÓN".equals(entry.getReferenciaTipo())) continue;
 
+            long inc = ("Activo".equals(cuenta.getTipo()) || "Gasto".equals(cuenta.getTipo()))
+                ? item.getDebe() - item.getHaber()
+                : item.getHaber() - item.getDebe();
+
+            if (entry.getFecha().isBefore(fechaDesde)) { saldoInicial += inc; continue; }
+            if (entry.getFecha().isAfter(fechaHasta)) continue;
+
+            saldo += inc;
             LedgerResponse.LedgerItem mi = new LedgerResponse.LedgerItem();
             mi.setFecha(entry.getFecha() != null ? entry.getFecha().toString() : null);
             mi.setConcepto(entry.getConcepto());
@@ -513,14 +518,7 @@ public class AccountingService {
             mi.setReferenciaId(entry.getReferenciaId());
             mi.setDebe(item.getDebe());
             mi.setHaber(item.getHaber());
-
-            String tipo = cuenta.getTipo();
-            if ("Activo".equals(tipo) || "Gasto".equals(tipo)) {
-                saldo = saldo + item.getDebe() - item.getHaber();
-            } else {
-                saldo = saldo + item.getHaber() - item.getDebe();
-            }
-            mi.setSaldo(saldo);
+            mi.setSaldo(saldoInicial + saldo);
             movimientos.add(mi);
         }
 
@@ -528,15 +526,20 @@ public class AccountingService {
         res.setCuentaId(cuentaId);
         res.setCuentaCodigo(cuenta.getCodigo());
         res.setCuentaNombre(cuenta.getNombre());
-        res.setSaldoInicial(0L);
+        res.setSaldoInicial(saldoInicial);
         res.setTotalDebe(movimientos.stream().map(LedgerResponse.LedgerItem::getDebe).reduce(0L, Long::sum));
         res.setTotalHaber(movimientos.stream().map(LedgerResponse.LedgerItem::getHaber).reduce(0L, Long::sum));
-        res.setSaldoFinal(saldo);
+        res.setSaldoFinal(saldoInicial + saldo);
         res.setMovimientos(movimientos);
         return res;
     }
 
-    public BalanceResponse getBalance() {
+    public BalanceResponse getBalance(String periodoCodigo) {
+        PeriodoContable periodo = (periodoCodigo != null && !periodoCodigo.isBlank())
+                ? periodoRepository.findByCodigo(periodoCodigo)
+                    .orElseThrow(() -> new RuntimeException("Período " + periodoCodigo + " no encontrado"))
+                : null;
+
         List<AccountCatalog> cuentasActivo = catalogRepository.findByOrderByCodigoAsc().stream()
                 .filter(c -> "Activo".equals(c.getTipo()) && c.getAceptaAsientos()).toList();
         List<AccountCatalog> cuentasPasivo = catalogRepository.findByOrderByCodigoAsc().stream()
@@ -546,17 +549,27 @@ public class AccountingService {
 
         BalanceResponse res = new BalanceResponse();
         res.setFecha(LocalDate.now().toString());
-        res.setActivos(cuentasActivo.stream().map(c -> balanceItem(c, calcSaldo(c))).toList());
-        res.setPasivos(cuentasPasivo.stream().map(c -> balanceItem(c, calcSaldo(c))).toList());
-        res.setPatrimonio(cuentasPatrimonio.stream().map(c -> balanceItem(c, calcSaldo(c))).toList());
+        res.setActivos(cuentasActivo.stream().map(c -> balanceItem(c, calcSaldo(c, periodo))).toList());
+        res.setPasivos(cuentasPasivo.stream().map(c -> balanceItem(c, calcSaldo(c, periodo))).toList());
+        res.setPatrimonio(cuentasPatrimonio.stream().map(c -> balanceItem(c, calcSaldo(c, periodo))).toList());
         res.setTotalActivos(res.getActivos().stream().map(BalanceResponse.BalanceItem::getSaldo).reduce(0L, Long::sum));
         res.setTotalPasivos(res.getPasivos().stream().map(BalanceResponse.BalanceItem::getSaldo).reduce(0L, Long::sum));
         res.setTotalPatrimonio(res.getPatrimonio().stream().map(BalanceResponse.BalanceItem::getSaldo).reduce(0L, Long::sum));
         return res;
     }
 
+    public BalanceResponse getBalance() {
+        return getBalance(null);
+    }
+
     public IncomeStatementResponse getIncomeStatement() {
-        return getIncomeStatement(null);
+        return getIncomeStatement((PeriodoContable) null);
+    }
+
+    public IncomeStatementResponse getIncomeStatement(String periodoCodigo) {
+        PeriodoContable periodo = periodoRepository.findByCodigo(periodoCodigo)
+                .orElseThrow(() -> new RuntimeException("Período " + periodoCodigo + " no encontrado"));
+        return getIncomeStatement(periodo);
     }
 
     public IncomeStatementResponse getIncomeStatement(PeriodoContable periodo) {
@@ -586,6 +599,8 @@ public class AccountingService {
         for (AccountingEntryItem item : items) {
             AccountingEntry entry = entryRepository.findById(item.getAsientoId()).orElse(null);
             if (entry == null) continue;
+            if (entry.getReversado()) continue;
+            if ("REVERSIÓN".equals(entry.getReferenciaTipo())) continue;
             if (periodo != null && (entry.getFecha().isBefore(periodo.getFechaInicio()) || entry.getFecha().isAfter(periodo.getFechaFin())))
                 continue;
             totalDebe += item.getDebe();

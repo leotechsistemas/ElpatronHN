@@ -100,14 +100,14 @@ public class AccountingController {
 
     @GetMapping("/balance")
     @PreAuthorize("hasAnyRole('Admin','Analista')")
-    public ResponseEntity<BalanceResponse> getBalance() {
-        return ResponseEntity.ok(service.getBalance());
+    public ResponseEntity<BalanceResponse> getBalance(@RequestParam(required = false) String periodo) {
+        return ResponseEntity.ok(periodo != null ? service.getBalance(periodo) : service.getBalance());
     }
 
     @GetMapping("/income-statement")
     @PreAuthorize("hasAnyRole('Admin','Analista')")
-    public ResponseEntity<IncomeStatementResponse> getIncomeStatement() {
-        return ResponseEntity.ok(service.getIncomeStatement());
+    public ResponseEntity<IncomeStatementResponse> getIncomeStatement(@RequestParam(required = false) String periodo) {
+        return ResponseEntity.ok(periodo != null ? service.getIncomeStatement(periodo) : service.getIncomeStatement());
     }
 
     // ── Períodos Contables ──

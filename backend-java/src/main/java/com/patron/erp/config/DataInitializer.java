@@ -2,6 +2,7 @@ package com.patron.erp.config;
 
 import com.patron.erp.model.*;
 import com.patron.erp.repository.*;
+import com.patron.erp.service.AccountingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -18,15 +19,18 @@ public class DataInitializer implements CommandLineRunner {
     private final AccountCatalogRepository catalogRepository;
     private final CompanySettingsRepository settingsRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AccountingService accountingService;
 
     public DataInitializer(UserRepository userRepository,
                            AccountCatalogRepository catalogRepository,
                            CompanySettingsRepository settingsRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           AccountingService accountingService) {
         this.userRepository = userRepository;
         this.catalogRepository = catalogRepository;
         this.settingsRepository = settingsRepository;
         this.passwordEncoder = passwordEncoder;
+        this.accountingService = accountingService;
     }
 
     @Override
@@ -80,6 +84,7 @@ public class DataInitializer implements CommandLineRunner {
                 {"2.1.1", "2.1.1", "Impuestos por Pagar", "Pasivo", "3", "2.1", "1", "1"},
                 {"3", "3", "Patrimonio", "Patrimonio", "1", "", "0", "1"},
                 {"3.1.1", "3.1.1", "Capital", "Patrimonio", "3", "3", "1", "1"},
+                {"3.1.2", "3.1.2", "Utilidades Retenidas", "Patrimonio", "3", "3", "1", "1"},
                 {"4", "4", "Ingresos", "Ingreso", "1", "", "0", "1"},
                 {"4.1.1", "4.1.1", "Ventas", "Ingreso", "3", "4", "1", "1"},
                 {"5", "5", "Gastos", "Gasto", "1", "", "0", "1"},
@@ -112,5 +117,7 @@ public class DataInitializer implements CommandLineRunner {
             settingsRepository.save(cs);
             System.out.println(">>> Configuración de empresa seed creada");
         }
+
+        accountingService.initOpeningEntry("SISTEMA");
     }
 }

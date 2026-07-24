@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { jsPDF } from 'jspdf';
 import { api } from '../services/api';
-import { DollarSign, Plus, RotateCcw, X, FileText, BookOpen, BarChart3, Search, Loader2, CheckCircle, Download } from 'lucide-react';
+import { DollarSign, Plus, RotateCcw, X, FileText, BookOpen, BarChart3, Search, Loader2, CheckCircle, Download, List } from 'lucide-react';
 
-type Tab = 'catalog' | 'entries' | 'balance' | 'income';
+type Tab = 'catalog' | 'entries' | 'balance' | 'income' | 'ledger';
 
 export default function AccountingView() {
   const [tab, setTab] = useState<Tab>('catalog');
@@ -13,6 +13,13 @@ export default function AccountingView() {
   const [income, setIncome] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [periodos, setPeriodos] = useState<any[]>([]);
+  const [selectedPeriodo, setSelectedPeriodo] = useState('');
+  const [closeConfirm, setCloseConfirm] = useState('');
+  const [ledger, setLedger] = useState<any>(null);
+  const [ledgerCuentaId, setLedgerCuentaId] = useState('');
+  const [ledgerDesde, setLedgerDesde] = useState('');
+  const [ledgerHasta, setLedgerHasta] = useState('');
   const [search, setSearch] = useState('');
 
   // Modal state for entry creation
@@ -49,11 +56,38 @@ export default function AccountingView() {
     } catch { setError('Error al cargar estado resultados'); }
   };
 
+  const loadPeriodos = async () => {
+    try { setPeriodos(await api.getPeriodos()); } catch {}
+  };
+
+  const handleClosePeriod = async () => {
+    if (!selectedPeriodo || !closeConfirm) return;
+    try {
+      await api.closePeriod(selectedPeriodo, 'admin@patron.hn');
+      setError('');
+      setCloseConfirm('');
+      loadBalance();
+      loadPeriodos();
+    } catch (e: any) {
+      setError(`Error al cerrar período: ${e.message}`);
+    }
+  };
+
+  const loadLedger = async () => {
+    if (!ledgerCuentaId.trim()) return;
+    setLoading(true);
+    try {
+      setLedger(await api.getLedger(ledgerCuentaId, ledgerDesde || undefined, ledgerHasta || undefined));
+    } catch { setError('Error al cargar libro mayor'); }
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (tab === 'catalog') loadCatalog();
     else if (tab === 'entries') loadEntries();
-    else if (tab === 'balance') loadBalance();
+    else if (tab === 'balance') { loadBalance(); loadPeriodos(); }
     else if (tab === 'income') loadIncome();
+    else if (tab === 'ledger') setLedger(null);
   }, [tab]);
 
   const format = (n: number) => 'L. ' + (n || 0).toLocaleString('es-HN', { minimumFractionDigits: 2 });
@@ -383,6 +417,7 @@ export default function AccountingView() {
           { id: 'entries' as Tab, label: 'Libro Diario', icon: FileText },
           { id: 'balance' as Tab, label: 'Balance General', icon: BarChart3 },
           { id: 'income' as Tab, label: 'Estado Resultados', icon: DollarSign },
+          { id: 'ledger' as Tab, label: 'Libro Mayor', icon: List },
         ]).map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-t text-xs font-bold uppercase tracking-wider transition-all cursor-pointer
@@ -579,6 +614,34 @@ export default function AccountingView() {
               <span className="text-blue-400 font-bold">{format(balance.total_patrimonio)}</span>
             </div>
           </div>
+
+          {/* ── CLOSE PERIOD ── */}
+          <div className="bg-cyber-panel border border-red-500/30 rounded-lg p-4 space-y-3">
+            <h5 className="font-orbitron text-xs font-bold text-red-400 uppercase tracking-widest">Cierre de Período Contable</h5>
+            <div className="flex flex-wrap gap-3 items-end">
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-textD mb-1">Período a cerrar</label>
+                <select value={selectedPeriodo} onChange={e => setSelectedPeriodo(e.target.value)}
+                  className="bg-cyber-bg2 border border-cyber-purple/20 rounded px-3 py-2 text-xs font-mono text-text outline-none focus:border-cyber-cyan min-w-[160px]">
+                  <option value="">Seleccionar</option>
+                  {periodos.filter((p: any) => !p.cerrado).map((p: any) => (
+                    <option key={p.codigo} value={p.codigo}>{p.codigo} ({p.fecha_inicio} - {p.fecha_fin})</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-textD mb-1">Confirma escribiendo "CIERRE"</label>
+                <input type="text" value={closeConfirm} onChange={e => setCloseConfirm(e.target.value)}
+                  placeholder="Escribe CIERRE"
+                  className="bg-cyber-bg2 border border-red-500/30 rounded px-3 py-2 text-xs font-mono text-text outline-none focus:border-red-400 w-[140px]" />
+              </div>
+              <button onClick={handleClosePeriod}
+                disabled={!selectedPeriodo || closeConfirm !== 'CIERRE'}
+                className="bg-red-500/10 border border-red-500/40 text-red-400 px-4 py-2 rounded text-xs font-bold uppercase tracking-wider hover:bg-red-500/20 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+                CERRAR PERÍODO
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -632,6 +695,87 @@ export default function AccountingView() {
               </span>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ── LEDGER ── */}
+      {tab === 'ledger' && (
+        <div className="space-y-4">
+          <h4 className="font-orbitron text-xs font-bold text-cyber-cyan uppercase tracking-widest">Libro Mayor</h4>
+          <div className="flex flex-wrap gap-3 items-end">
+            <div>
+              <label className="block text-[10px] uppercase font-bold text-textD mb-1">Cuenta</label>
+              <select value={ledgerCuentaId} onChange={e => setLedgerCuentaId(e.target.value)}
+                className="bg-cyber-bg2 border border-cyber-purple/20 rounded px-3 py-2 text-xs font-mono text-text outline-none focus:border-cyber-cyan min-w-[200px]">
+                <option value="">Seleccionar cuenta</option>
+                {catalog.filter((c: any) => c.acepta_asientos).map((c: any) => (
+                  <option key={c.id} value={c.id}>{c.codigo} - {c.nombre}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase font-bold text-textD mb-1">Desde</label>
+              <input type="date" value={ledgerDesde} onChange={e => setLedgerDesde(e.target.value)}
+                className="bg-cyber-bg2 border border-cyber-purple/20 rounded px-3 py-2 text-xs font-mono text-text outline-none focus:border-cyber-cyan" />
+            </div>
+            <div>
+              <label className="block text-[10px] uppercase font-bold text-textD mb-1">Hasta</label>
+              <input type="date" value={ledgerHasta} onChange={e => setLedgerHasta(e.target.value)}
+                className="bg-cyber-bg2 border border-cyber-purple/20 rounded px-3 py-2 text-xs font-mono text-text outline-none focus:border-cyber-cyan" />
+            </div>
+            <button onClick={loadLedger} disabled={!ledgerCuentaId.trim() || loading}
+              className="bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan px-4 py-2 rounded text-xs font-bold uppercase tracking-wider hover:bg-cyber-cyan/20 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+              {loading ? 'CARGANDO...' : 'CONSULTAR'}
+            </button>
+          </div>
+
+          {ledger && (
+            <div className="bg-cyber-panel border border-cyber-purple/20 rounded-lg overflow-hidden">
+              <div className="p-4 border-b border-cyber-purple/10">
+                <p className="text-xs font-mono">
+                  <span className="text-textD">Cuenta: </span>
+                  <span className="text-cyber-cyan">{ledger.cuenta_codigo} - {ledger.cuenta_nombre}</span>
+                </p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs font-mono">
+                  <thead>
+                    <tr className="bg-cyber-purple/10 border-b border-cyber-purple/20">
+                      <th className="text-left px-3 py-2 text-textD font-bold">Fecha</th>
+                      <th className="text-left px-3 py-2 text-textD font-bold">Concepto</th>
+                      <th className="text-left px-3 py-2 text-textD font-bold">No. Asiento</th>
+                      <th className="text-right px-3 py-2 text-textD font-bold">Debe</th>
+                      <th className="text-right px-3 py-2 text-textD font-bold">Haber</th>
+                      <th className="text-right px-3 py-2 text-textD font-bold">Saldo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-cyber-purple/5 text-textD">
+                      <td colSpan={3} className="px-3 py-2 text-xs italic">Saldo inicial</td>
+                      <td colSpan={2}></td>
+                      <td className="text-right px-3 py-2 font-bold">{format(ledger.saldo_inicial)}</td>
+                    </tr>
+                    {(ledger.movimientos || []).map((m: any, i: number) => (
+                      <tr key={i} className="border-b border-cyber-purple/5 hover:bg-cyber-purple/5">
+                        <td className="px-3 py-2 text-textD whitespace-nowrap">{m.fecha}</td>
+                        <td className="px-3 py-2 text-text max-w-[250px] truncate">{m.concepto}</td>
+                        <td className="px-3 py-2 text-textD">{m.numero_asiento}</td>
+                        <td className="text-right px-3 py-2 text-green-400">{m.debe > 0 ? format(m.debe) : ''}</td>
+                        <td className="text-right px-3 py-2 text-red-400">{m.haber > 0 ? format(m.haber) : ''}</td>
+                        <td className="text-right px-3 py-2 font-bold">{format(m.saldo)}</td>
+                      </tr>
+                    ))}
+                    <tr className="border-t border-cyber-purple/20 font-bold">
+                      <td colSpan={3} className="px-3 py-2 text-textD">Totales</td>
+                      <td className="text-right px-3 py-2 text-green-400">{format(ledger.total_debe)}</td>
+                      <td className="text-right px-3 py-2 text-red-400">{format(ledger.total_haber)}</td>
+                      <td className="text-right px-3 py-2 text-cyber-cyan">{format(ledger.saldo_final)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
