@@ -1,0 +1,541 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Share+Tech+Mono&display=swap');
+@import "tailwindcss";
+
+:root {
+  --cy-bg: #1C1C20;
+  --cy-bg2: #24242A;
+  --cy-panel: #2C2C34;
+  --cy-panel2: #35353E;
+  --cy-purple: #EBB42C;
+  --cy-cyan: #CCCCCC;
+  --cy-pink: #FFFFFF;
+  --cy-text: #E8E8EC;
+  --cy-textD: #9CA3AF;
+  --cy-border: rgba(235, 180, 44, 0.2);
+  --cy-modal-bg: #2C2C34;
+  --cy-modal-overlay: rgba(12, 12, 14, 0.8);
+  --cy-scrollbar-track: #24242A;
+  --cy-scrollbar-thumb: #855F0E;
+}
+
+/* ── ORO CLARO (Light Gold) ── */
+:root.light-theme,
+:root.theme-oro-claro {
+  --cy-bg: #FAF9F6;
+  --cy-bg2: #F4F3EF;
+  --cy-panel: #FFFFFF;
+  --cy-panel2: #EAE8E3;
+  --cy-purple: #A67C00;
+  --cy-cyan: #5A5A5C;
+  --cy-pink: #1A1A1A;
+  --cy-text: #1C1917;
+  --cy-textD: #57534E;
+  --cy-border: rgba(166, 124, 0, 0.2);
+  --cy-modal-bg: #FFFFFF;
+  --cy-modal-overlay: rgba(28, 25, 23, 0.6);
+  --cy-scrollbar-track: #F4F3EF;
+  --cy-scrollbar-thumb: #C2A649;
+}
+
+/* ── PLATINO (Dark Silver/Chrome) ── */
+:root.theme-platino {
+  --cy-bg: #18181B;
+  --cy-bg2: #1F1F23;
+  --cy-panel: #27272B;
+  --cy-panel2: #303035;
+  --cy-purple: #A3A3A3;
+  --cy-cyan: #D4D4D8;
+  --cy-pink: #FAFAFA;
+  --cy-text: #E4E4E7;
+  --cy-textD: #A1A1AA;
+  --cy-border: rgba(163, 163, 163, 0.2);
+  --cy-modal-bg: #27272B;
+  --cy-modal-overlay: rgba(12, 12, 14, 0.8);
+  --cy-scrollbar-track: #1F1F23;
+  --cy-scrollbar-thumb: #6B7280;
+}
+
+/* ── ZAFIRO (Dark Navy/Blue) ── */
+:root.theme-zafiro {
+  --cy-bg: #0F172A;
+  --cy-bg2: #172032;
+  --cy-panel: #1E293B;
+  --cy-panel2: #263348;
+  --cy-purple: #60A5FA;
+  --cy-cyan: #93C5FD;
+  --cy-pink: #E0F2FE;
+  --cy-text: #E2E8F0;
+  --cy-textD: #94A3B8;
+  --cy-border: rgba(96, 165, 250, 0.2);
+  --cy-modal-bg: #1E293B;
+  --cy-modal-overlay: rgba(10, 15, 30, 0.85);
+  --cy-scrollbar-track: #172032;
+  --cy-scrollbar-thumb: #3B82F6;
+}
+
+/* ── ESMERALDA (Dark Green) ── */
+:root.theme-esmeralda {
+  --cy-bg: #0C1F12;
+  --cy-bg2: #142A1A;
+  --cy-panel: #1A3524;
+  --cy-panel2: #21412C;
+  --cy-purple: #34D399;
+  --cy-cyan: #6EE7B7;
+  --cy-pink: #D1FAE5;
+  --cy-text: #E2E8F0;
+  --cy-textD: #94A3B8;
+  --cy-border: rgba(52, 211, 153, 0.2);
+  --cy-modal-bg: #1A3524;
+  --cy-modal-overlay: rgba(8, 20, 12, 0.85);
+  --cy-scrollbar-track: #142A1A;
+  --cy-scrollbar-thumb: #059669;
+}
+
+/* ── PIZARRA (Light Slate) ── */
+:root.theme-pizarra {
+  --cy-bg: #F1F5F9;
+  --cy-bg2: #E9EDF2;
+  --cy-panel: #FFFFFF;
+  --cy-panel2: #E2E8F0;
+  --cy-purple: #475569;
+  --cy-cyan: #334155;
+  --cy-pink: #0F172A;
+  --cy-text: #1E293B;
+  --cy-textD: #64748B;
+  --cy-border: rgba(71, 85, 105, 0.2);
+  --cy-modal-bg: #FFFFFF;
+  --cy-modal-overlay: rgba(15, 23, 42, 0.5);
+  --cy-scrollbar-track: #E9EDF2;
+  --cy-scrollbar-thumb: #94A3B8;
+}
+
+/* ── ROSA (Feminine Pastel Pink) ── */
+:root.theme-rosa {
+  --cy-bg: #1E1A1D;
+  --cy-bg2: #2A2226;
+  --cy-panel: #332A2F;
+  --cy-panel2: #3D3238;
+  --cy-purple: #F472B6;
+  --cy-cyan: #F9A8D4;
+  --cy-pink: #FDF2F8;
+  --cy-text: #F3E8F0;
+  --cy-textD: #D4A8C4;
+  --cy-border: rgba(244, 114, 182, 0.2);
+  --cy-modal-bg: #332A2F;
+  --cy-modal-overlay: rgba(20, 14, 18, 0.8);
+  --cy-scrollbar-track: #2A2226;
+  --cy-scrollbar-thumb: #DB2777;
+}
+
+/* ── RUBÍ (Dark Red/Magenta) ── */
+:root.theme-rubi {
+  --cy-bg: #1A0F0F;
+  --cy-bg2: #241515;
+  --cy-panel: #2E1A1A;
+  --cy-panel2: #382020;
+  --cy-purple: #E5484D;
+  --cy-cyan: #F87171;
+  --cy-pink: #FEE2E2;
+  --cy-text: #F3E8E8;
+  --cy-textD: #C4A0A0;
+  --cy-border: rgba(229, 72, 77, 0.25);
+  --cy-modal-bg: #2E1A1A;
+  --cy-modal-overlay: rgba(16, 8, 8, 0.85);
+  --cy-scrollbar-track: #241515;
+  --cy-scrollbar-thumb: #DC2626;
+}
+
+/* ── ÓNIX (Pure Dark Monochrome) ── */
+:root.theme-onix {
+  --cy-bg: #0A0A0A;
+  --cy-bg2: #141414;
+  --cy-panel: #1C1C1C;
+  --cy-panel2: #262626;
+  --cy-purple: #A3A3A3;
+  --cy-cyan: #D4D4D4;
+  --cy-pink: #FFFFFF;
+  --cy-text: #E5E5E5;
+  --cy-textD: #808080;
+  --cy-border: rgba(163, 163, 163, 0.15);
+  --cy-modal-bg: #1C1C1C;
+  --cy-modal-overlay: rgba(0, 0, 0, 0.9);
+  --cy-scrollbar-track: #141414;
+  --cy-scrollbar-thumb: #525252;
+}
+
+/* ── COBALTO (Rich Industrial Blue) ── */
+:root.theme-cobalto {
+  --cy-bg: #0B1426;
+  --cy-bg2: #111D36;
+  --cy-panel: #182748;
+  --cy-panel2: #1F3157;
+  --cy-purple: #3B82F6;
+  --cy-cyan: #60A5FA;
+  --cy-pink: #DBEAFE;
+  --cy-text: #E0E7FF;
+  --cy-textD: #93A5D4;
+  --cy-border: rgba(59, 130, 246, 0.2);
+  --cy-modal-bg: #182748;
+  --cy-modal-overlay: rgba(6, 12, 28, 0.88);
+  --cy-scrollbar-track: #111D36;
+  --cy-scrollbar-thumb: #2563EB;
+}
+
+/* ── MENTA (Fresh Light Green) ── */
+:root.theme-menta {
+  --cy-bg: #F0F9F4;
+  --cy-bg2: #E5F4EB;
+  --cy-panel: #FFFFFF;
+  --cy-panel2: #D9EDE2;
+  --cy-purple: #059669;
+  --cy-cyan: #10B981;
+  --cy-pink: #0F172A;
+  --cy-text: #1C2E24;
+  --cy-textD: #5C7A6A;
+  --cy-border: rgba(5, 150, 105, 0.2);
+  --cy-modal-bg: #FFFFFF;
+  --cy-modal-overlay: rgba(12, 30, 22, 0.5);
+  --cy-scrollbar-track: #E5F4EB;
+  --cy-scrollbar-thumb: #34D399;
+}
+
+/* ════════════════════════════════════════════════ */
+/* WARM DARK THEMES                                */
+/* ════════════════════════════════════════════════ */
+
+/* ── TERRAZO (Warm Terracotta / Clay) ── */
+:root.theme-terrazo {
+  --cy-bg: #1C1410;
+  --cy-bg2: #261C16;
+  --cy-panel: #30241E;
+  --cy-panel2: #3A2C24;
+  --cy-purple: #D4835A;
+  --cy-cyan: #F0A77A;
+  --cy-pink: #FEF2E8;
+  --cy-text: #EDE0D8;
+  --cy-textD: #B8A094;
+  --cy-border: rgba(212, 131, 90, 0.25);
+  --cy-modal-bg: #30241E;
+  --cy-modal-overlay: rgba(16, 10, 8, 0.85);
+  --cy-scrollbar-track: #261C16;
+  --cy-scrollbar-thumb: #B8733A;
+}
+
+/* ── COBRE (Warm Copper / Bronze) ── */
+:root.theme-cobre {
+  --cy-bg: #1A1510;
+  --cy-bg2: #241E16;
+  --cy-panel: #2E261C;
+  --cy-panel2: #382F22;
+  --cy-purple: #D4904A;
+  --cy-cyan: #F0B87A;
+  --cy-pink: #FEF5E8;
+  --cy-text: #EDE3D8;
+  --cy-textD: #B8A894;
+  --cy-border: rgba(212, 144, 74, 0.25);
+  --cy-modal-bg: #2E261C;
+  --cy-modal-overlay: rgba(14, 10, 6, 0.85);
+  --cy-scrollbar-track: #241E16;
+  --cy-scrollbar-thumb: #C28A3A;
+}
+
+/* ── VINO (Warm Burgundy / Wine) ── */
+:root.theme-vino {
+  --cy-bg: #1A0E12;
+  --cy-bg2: #24141A;
+  --cy-panel: #2E1A22;
+  --cy-panel2: #38202A;
+  --cy-purple: #D4507A;
+  --cy-cyan: #F0789E;
+  --cy-pink: #FEE8F0;
+  --cy-text: #EDD8E0;
+  --cy-textD: #B894A4;
+  --cy-border: rgba(212, 80, 122, 0.25);
+  --cy-modal-bg: #2E1A22;
+  --cy-modal-overlay: rgba(14, 6, 10, 0.85);
+  --cy-scrollbar-track: #24141A;
+  --cy-scrollbar-thumb: #C23A5E;
+}
+
+/* ── MOKA (Warm Mocha Coffee) ── */
+:root.theme-moka {
+  --cy-bg: #181410;
+  --cy-bg2: #221C16;
+  --cy-panel: #2C241E;
+  --cy-panel2: #362C24;
+  --cy-purple: #C49A6E;
+  --cy-cyan: #E0BC94;
+  --cy-pink: #FEF0E4;
+  --cy-text: #E8DCD4;
+  --cy-textD: #B0A094;
+  --cy-border: rgba(196, 154, 110, 0.25);
+  --cy-modal-bg: #2C241E;
+  --cy-modal-overlay: rgba(12, 10, 8, 0.85);
+  --cy-scrollbar-track: #221C16;
+  --cy-scrollbar-thumb: #A67B4E;
+}
+
+/* ════════════════════════════════════════════════ */
+/* WARM LIGHT THEMES                               */
+/* ════════════════════════════════════════════════ */
+
+/* ── HUESO (Warm Ivory / Bone) ── */
+:root.theme-hueso {
+  --cy-bg: #F7F3EE;
+  --cy-bg2: #EFEAE4;
+  --cy-panel: #FFFFFF;
+  --cy-panel2: #E7DFD8;
+  --cy-purple: #A67B5B;
+  --cy-cyan: #5C4A3E;
+  --cy-pink: #1C1814;
+  --cy-text: #2C2420;
+  --cy-textD: #7A6A5E;
+  --cy-border: rgba(166, 123, 91, 0.2);
+  --cy-modal-bg: #FFFFFF;
+  --cy-modal-overlay: rgba(28, 22, 18, 0.5);
+  --cy-scrollbar-track: #EFEAE4;
+  --cy-scrollbar-thumb: #B8957A;
+}
+
+/* ── DURAZNO (Soft Peach Light) ── */
+:root.theme-durazno {
+  --cy-bg: #FDF5F0;
+  --cy-bg2: #F8EDE6;
+  --cy-panel: #FFFFFF;
+  --cy-panel2: #F2E3DA;
+  --cy-purple: #E8957A;
+  --cy-cyan: #C46A4E;
+  --cy-pink: #1C1410;
+  --cy-text: #2C2018;
+  --cy-textD: #8A7064;
+  --cy-border: rgba(232, 149, 122, 0.25);
+  --cy-modal-bg: #FFFFFF;
+  --cy-modal-overlay: rgba(28, 18, 14, 0.45);
+  --cy-scrollbar-track: #F8EDE6;
+  --cy-scrollbar-thumb: #E0957A;
+}
+
+/* ── MIEL (Golden Honey Light) ── */
+:root.theme-miel {
+  --cy-bg: #FDF8F0;
+  --cy-bg2: #F8F0E4;
+  --cy-panel: #FFFFFF;
+  --cy-panel2: #F2E8D8;
+  --cy-purple: #C49A3A;
+  --cy-cyan: #8A6A2E;
+  --cy-pink: #1C1810;
+  --cy-text: #2C2418;
+  --cy-textD: #7A6E54;
+  --cy-border: rgba(196, 154, 58, 0.2);
+  --cy-modal-bg: #FFFFFF;
+  --cy-modal-overlay: rgba(24, 20, 12, 0.45);
+  --cy-scrollbar-track: #F8F0E4;
+  --cy-scrollbar-thumb: #D4AA4A;
+}
+
+/* ── CANELA (Warm Cinnamon Light) ── */
+:root.theme-canela {
+  --cy-bg: #F8F2EC;
+  --cy-bg2: #F0E8E0;
+  --cy-panel: #FFFFFF;
+  --cy-panel2: #E8DED4;
+  --cy-purple: #B8784A;
+  --cy-cyan: #8A5E3E;
+  --cy-pink: #1C1410;
+  --cy-text: #2C2018;
+  --cy-textD: #7A6656;
+  --cy-border: rgba(184, 120, 74, 0.2);
+  --cy-modal-bg: #FFFFFF;
+  --cy-modal-overlay: rgba(24, 18, 12, 0.45);
+  --cy-scrollbar-track: #F0E8E0;
+  --cy-scrollbar-thumb: #C4905E;
+}
+
+@theme {
+  --font-sans: "Share Tech Mono", monospace;
+  --font-mono: "Share Tech Mono", monospace;
+  --font-orbitron: "Orbitron", sans-serif;
+  --color-cyber-bg: var(--cy-bg);
+  --color-cyber-bg2: var(--cy-bg2);
+  --color-cyber-panel: var(--cy-panel);
+  --color-cyber-panel2: var(--cy-panel2);
+  --color-cyber-purple: var(--cy-purple);
+  --color-cyber-cyan: var(--cy-cyan);
+  --color-cyber-pink: var(--cy-pink);
+  --color-text: var(--cy-text);
+  --color-textD: var(--cy-textD);
+}
+
+/* ═══ MODALS & OVERLAYS ═══ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--cy-modal-overlay);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: var(--cy-panel);
+  border: 1.5px solid var(--cy-purple);
+  border-radius: 12px;
+  width: 95%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 0 25px rgba(235, 180, 44, 0.2), 0 10px 40px rgba(0, 0, 0, 0.4);
+  animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalIn {
+  from {
+    transform: scale(0.95) translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalHeader {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--cy-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalBody {
+  padding: 24px;
+}
+
+.modalFooter {
+  padding: 16px 24px;
+  border-top: 1px solid var(--cy-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Form controls dynamic contrast */
+input, select, textarea {
+  color: var(--cy-text) !important;
+  background-color: var(--cy-panel2) !important;
+  border: 1px solid var(--cy-border) !important;
+}
+
+select option {
+  background-color: var(--cy-panel) !important;
+  color: var(--cy-text) !important;
+}
+
+::placeholder {
+  color: var(--cy-textD) !important;
+  opacity: 0.75;
+}
+
+body {
+  color: var(--cy-text);
+  background-color: var(--cy-bg);
+}
+
+.text-text {
+  color: var(--cy-text) !important;
+}
+
+.text-textD {
+  color: var(--cy-textD) !important;
+}
+
+/* CRT monitor lines - disable in light theme for a pristine layout */
+:root:not(.light-theme):not(.theme-oro-claro):not(.theme-pizarra) .cyber-crt-effect::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(235, 180, 44, 0.015) 2px, rgba(235, 180, 44, 0.015) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(204, 204, 204, 0.01) 2px, rgba(204, 204, 204, 0.01) 4px);
+  pointer-events: none;
+  z-index: 100;
+}
+
+.cyber-glow-purple {
+  box-shadow: 0 0 20px rgba(235, 180, 44, 0.25), inset 0 0 40px rgba(235, 180, 44, 0.03);
+}
+
+.cyber-glow-cyan {
+  box-shadow: 0 0 20px rgba(204, 204, 204, 0.2), inset 0 0 40px rgba(204, 204, 204, 0.02);
+}
+
+.cyber-gradient-text {
+  background: linear-gradient(135deg, var(--cy-purple), var(--cy-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Dynamic scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cy-scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--cy-scrollbar-thumb);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cy-purple);
+}
+
+/* Polished Hover Enhancements (Visual Comfort) */
+.hover-item-comfort {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hover-item-comfort:hover {
+  background-color: rgba(138, 43, 226, 0.1);
+  transform: translateY(-1px);
+}
+:root.light-theme .hover-item-comfort:hover,
+:root.theme-oro-claro .hover-item-comfort:hover,
+:root.theme-pizarra .hover-item-comfort:hover {
+  background-color: rgba(79, 70, 229, 0.06);
+}
+
+/* ── Print Styles ── */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #invoice-print-area, #invoice-print-area * {
+    visibility: visible;
+  }
+  #invoice-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white !important;
+    color: black !important;
+  }
+  .modal-overlay {
+    background: white !important;
+    backdrop-filter: none !important;
+    position: absolute !important;
+  }
+  .modal {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    background: white !important;
+  }
+  .modalHeader, .modalFooter {
+    display: none !important;
+  }
+}

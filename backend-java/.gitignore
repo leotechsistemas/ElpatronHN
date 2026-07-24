@@ -1,0 +1,14 @@
+target/
+*.class
+*.jar
+*.war
+*.log
+.idea/
+*.iml
+.settings/
+.project
+.classpath
+.vscode/
+mvnw
+mvnw.cmd
+.mvn/wrapper/maven-wrapper.jar

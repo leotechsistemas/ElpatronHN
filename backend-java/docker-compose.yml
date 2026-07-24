@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: patron-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: patron_erp
+      POSTGRES_USER: patron
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U patron -d patron_erp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  patron-api:
+    build: ..
+    container_name: el-patron-hn-prod
+    restart: unless-stopped
+    ports:
+      - "443:8080"
+    env_file:
+      - ../.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - patron-prod-data:/app/data
+
+volumes:
+  pgdata:
+  patron-prod-data:

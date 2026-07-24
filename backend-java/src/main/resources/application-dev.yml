@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/patron_erp
+    driver-class-name: org.postgresql.Driver
+    username: patron
+    password: patron_secret_2026
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+
+app:
+  cors:
+    allowed-origins: http://localhost:3002,http://localhost:3001

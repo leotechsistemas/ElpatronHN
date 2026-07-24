@@ -1,0 +1,6 @@
+{
+  "name": "EL Patron HN",
+  "description": "Sistema ERP corporativo inteligente para EL Patron HN con ventas, inventario, CRM avanzado y balance de negocios.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
