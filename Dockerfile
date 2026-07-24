@@ -27,5 +27,4 @@ COPY --from=backend-build /app/backend-java/target/*.jar /app/app.jar
 
 ENV SPRING_PROFILES_ACTIVE=prod
 
-EXPOSE 8080
 CMD ["java", "-jar", "app.jar"]
