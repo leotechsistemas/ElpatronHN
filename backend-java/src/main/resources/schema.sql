@@ -145,7 +145,7 @@ CREATE TABLE payments (
 );
 
 CREATE TABLE payment_items (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     payment_id VARCHAR(20) NOT NULL REFERENCES payments(id) ON DELETE CASCADE,
     venta_id VARCHAR(20) NOT NULL REFERENCES sales(id),
     monto_asignado BIGINT NOT NULL
@@ -221,7 +221,7 @@ CREATE TABLE company_settings (
 );
 
 CREATE TABLE IF NOT EXISTS leads (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     nombre VARCHAR(100),
     correo VARCHAR(150),
     telefono VARCHAR(30),
@@ -266,7 +266,7 @@ CREATE TABLE account_catalog (
 );
 
 CREATE TABLE periodo_contable (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     codigo VARCHAR(7) NOT NULL UNIQUE,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
@@ -292,7 +292,7 @@ CREATE TABLE accounting_entries (
 );
 
 CREATE TABLE accounting_entry_items (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     asiento_id VARCHAR(20) NOT NULL REFERENCES accounting_entries(id) ON DELETE CASCADE,
     cuenta_id VARCHAR(20) NOT NULL REFERENCES account_catalog(id),
     debe BIGINT NOT NULL DEFAULT 0,
@@ -301,7 +301,7 @@ CREATE TABLE accounting_entry_items (
 );
 
 CREATE TABLE campaigns (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     segmento VARCHAR(20) NOT NULL,
     canal VARCHAR(15) NOT NULL,
     plantilla VARCHAR(20) NOT NULL,
