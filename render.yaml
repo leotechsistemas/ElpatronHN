@@ -16,18 +16,10 @@ services:
           name: el-patron-hn
           property: host
         format: https://${HOST},http://localhost:3002
-      - key: SPRING_DATASOURCE_URL
+      - key: DATABASE_URL
         fromDatabase:
           name: patron-erp-db
           property: connectionString
-      - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: patron-erp-db
-          property: user
-      - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: patron-erp-db
-          property: password
 
 databases:
   - name: patron-erp-db
