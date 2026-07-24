@@ -45,7 +45,11 @@ CREATE TABLE users (
     fecha_contratacion DATE,
     fecha_nacimiento DATE,
     contacto_emergencia VARCHAR(100),
-    telefono_emergencia VARCHAR(30)
+    telefono_emergencia VARCHAR(30),
+    intentos_fallidos INTEGER DEFAULT 0,
+    bloqueado_hasta TIMESTAMP,
+    ultimo_cambio_contrasena DATE,
+    contrasena_expirada BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE providers (
