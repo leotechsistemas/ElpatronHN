@@ -144,6 +144,7 @@ export default function QuotationsView({
 
   // Auxiliary quick client form inside modal
   const [isOpenClientModal, setIsOpenClientModal] = useState(false);
+  const [quickClientLoading, setQuickClientLoading] = useState(false);
   const [jobCategoria, setJobCategoria] = useState<string>('');
   const [jobServiceId, setJobServiceId] = useState<string>('');
   const [quickNombre, setQuickNombre] = useState('');
@@ -200,8 +201,8 @@ export default function QuotationsView({
 
   const handleQuickClientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!quickNombre.trim()) return;
-
+    if (!quickNombre.trim() || quickClientLoading) return;
+    setQuickClientLoading(true);
     const newCl = await onAddQuickClient({
       nombre: quickNombre.trim(),
       telefono: quickTelefono.trim(),
@@ -211,6 +212,7 @@ export default function QuotationsView({
       rtn: quickRtn.trim()
     });
 
+    setQuickClientLoading(false);
     if (newCl) {
       setSelectedClient(newCl.ID);
       // Reset quick client form
@@ -1098,6 +1100,7 @@ export default function QuotationsView({
         isOpen={isOpenClientModal}
         onClose={() => setIsOpenClientModal(false)}
         onSubmit={handleQuickClientSubmit}
+        loading={quickClientLoading}
         quickNombre={quickNombre} setQuickNombre={setQuickNombre}
         quickTelefono={quickTelefono} setQuickTelefono={setQuickTelefono}
         quickEmail={quickEmail} setQuickEmail={setQuickEmail}

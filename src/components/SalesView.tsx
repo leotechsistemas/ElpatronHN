@@ -244,6 +244,7 @@ export default function SalesView({
   const [jobDescripcion, setJobDescripcion] = useState<string>('');
 
   const [isOpenClientModal, setIsOpenClientModal] = useState(false);
+  const [quickClientLoading, setQuickClientLoading] = useState(false);
   const [quickNombre, setQuickNombre] = useState('');
   const [quickTelefono, setQuickTelefono] = useState('');
   const [quickEmail, setQuickEmail] = useState('');
@@ -318,7 +319,8 @@ export default function SalesView({
 
   const handleQuickClientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!quickNombre.trim()) return;
+    if (!quickNombre.trim() || quickClientLoading) return;
+    setQuickClientLoading(true);
     const newCl = await onAddQuickClient({
       nombre: quickNombre.trim(),
       telefono: quickTelefono.trim(),
@@ -327,6 +329,7 @@ export default function SalesView({
       ciudad: quickCiudad.trim() || 'S.P.S.',
       rtn: quickRtn.trim()
     });
+    setQuickClientLoading(false);
     if (newCl) {
       setSelectedClient(newCl.ID);
       setQuickNombre('');
@@ -1262,6 +1265,7 @@ export default function SalesView({
         isOpen={isOpenClientModal}
         onClose={() => setIsOpenClientModal(false)}
         onSubmit={handleQuickClientSubmit}
+        loading={quickClientLoading}
         quickNombre={quickNombre} setQuickNombre={setQuickNombre}
         quickTelefono={quickTelefono} setQuickTelefono={setQuickTelefono}
         quickEmail={quickEmail} setQuickEmail={setQuickEmail}

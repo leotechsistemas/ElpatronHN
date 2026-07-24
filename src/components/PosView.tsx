@@ -67,6 +67,7 @@ export default function PosView({
 
   // Quick client modal
   const [isOpenClientModal, setIsOpenClientModal] = useState(false);
+  const [quickClientLoading, setQuickClientLoading] = useState(false);
   const [quickNombre, setQuickNombre] = useState('');
   const [quickTelefono, setQuickTelefono] = useState('');
   const [quickEmail, setQuickEmail] = useState('');
@@ -227,7 +228,8 @@ export default function PosView({
 
   const handleQuickClientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!quickNombre.trim()) return;
+    if (!quickNombre.trim() || quickClientLoading) return;
+    setQuickClientLoading(true);
     const newCl = await onAddQuickClient({
       nombre: quickNombre.trim(),
       telefono: quickTelefono.trim(),
@@ -236,6 +238,7 @@ export default function PosView({
       ciudad: quickCiudad.trim() || 'S.P.S.',
       rtn: quickRtn.trim()
     });
+    setQuickClientLoading(false);
     if (newCl) {
       setPosClient(newCl.ID);
       setQuickNombre('');
@@ -635,6 +638,7 @@ export default function PosView({
         isOpen={isOpenClientModal}
         onClose={() => setIsOpenClientModal(false)}
         onSubmit={handleQuickClientSubmit}
+        loading={quickClientLoading}
         quickNombre={quickNombre} setQuickNombre={setQuickNombre}
         quickTelefono={quickTelefono} setQuickTelefono={setQuickTelefono}
         quickEmail={quickEmail} setQuickEmail={setQuickEmail}

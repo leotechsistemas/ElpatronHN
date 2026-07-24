@@ -5,6 +5,7 @@ interface QuickClientModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
+  loading?: boolean;
   quickNombre: string;
   setQuickNombre: (v: string) => void;
   quickTelefono: string;
@@ -26,7 +27,7 @@ const hondurasDeptos = [
 ];
 
 export default function QuickClientModal({
-  isOpen, onClose, onSubmit,
+  isOpen, onClose, onSubmit, loading,
   quickNombre, setQuickNombre,
   quickTelefono, setQuickTelefono,
   quickEmail, setQuickEmail,
@@ -134,10 +135,10 @@ export default function QuickClientModal({
             </button>
             <button 
               type="submit" 
-              disabled={!quickNombre.trim()}
+              disabled={!quickNombre.trim() || loading}
               className="btn btn-primary bg-gradient-to-r from-cyber-pink to-cyber-purple text-white font-orbitron font-bold px-6 py-3 rounded shadow-[0_0_12px_rgba(236,72,153,0.4)] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              REGISTRAR CLIENTE
+              {loading ? 'GUARDANDO...' : 'REGISTRAR CLIENTE'}
             </button>
           </div>
         </form>
